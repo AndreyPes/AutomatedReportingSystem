@@ -1,0 +1,291 @@
+﻿@{
+    Layout = null;
+}
+@model IEnumerable<BusinessLogic.BL.Common.GeneralDataModel.EquipmentData>
+@{
+    ViewBag.Title = "Home Page";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <link href="~/Content/ARS.css" rel="stylesheet" type="text/css"/>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.equipmentTable').css({
+                'width': ($('.equipmentTable').width() + 50 + 'px')
+            });
+
+            $('.TableLable').css({
+                'width': ($('.equipmentTable').width() + 'px')
+            });
+            $('.TableLable2').css({
+                'width': ($('.processTable').width() + 'px')
+            });
+            $('.TableLable3').css({
+                'width': ($('.operationTable').width() + 'px')
+            });
+        });
+
+    </script>
+</head>
+<body >
+<header>
+    <div class="header-left">
+        <img src="~/Images/Izovac_icon.jpg" style="height: 15%; width: 15%;"/>
+        <div>
+            <button style="display: inline-block">Фильтр по дате</button>
+            <button style="display: inline-block">Фильтр по состоянию</button>
+            <button style="display: inline-block">Фильтр по операциям</button>
+        </div>
+    </div>
+
+    <div class="header-center" style="margin: 0% 25% 0% 0%;">
+        <p>Wellcome to Izovac test application</p>
+    </div>
+    <div style="display: table">
+        <div class="header-right">
+            <button style="margin-bottom: 10%;">Select All</button></>
+            <div class="header-right">
+                <button style="margin-bottom: 10%;">Clear</button></>
+            </div>
+        </div>
+    </div>
+</header>
+<div style="display: inline-block;">
+    <div class="TableLable" style="border-radius: 10px; text-align: center; margin: 0.2%; background-color: grey; height: 50px;">
+        <p style="font: normal 28px 'Fugaz One', cursive;">Список установок</p>
+    </div>
+    <div class="ViewTableEquip" style="max-height: 70%; max-width: 100%; margin: 0.2%;">
+        <table class="equipmentTable" style="background-color: lightgray;">
+            @{
+                int _iter = 0;
+                foreach (var s in Model)
+                {
+                    string _procStatus = "Отсутствуют данные";
+                    string _procName = "Отсутствуют данные";
+                    DateTime? _dateStarTime = null;
+                    TimeSpan? _lastDateTimeProc = null;
+
+                    if (s.Process != null)
+                    {
+                        if (s.Process.ElementAt(0).IsCompleted)
+                        {
+                            _procStatus = "Завершен";
+                        }
+                        if (s.Process.ElementAt(0).IsFailed)
+                        {
+                            _procStatus = "Завершен с ошибкой";
+                        }
+                        if (!s.Process.ElementAt(0).IsCompleted && !s.Process.ElementAt(0).IsFailed)
+                        {
+                            _procStatus = "Выполняеться";
+                        }
+                        _procName = s.Process.ElementAt(0).Name;
+                        _dateStarTime = s.Process.ElementAt(0).Date;
+                        if (s.Process.ElementAt(0).OperationList != null)
+                        {
+                            _lastDateTimeProc = s.Process.ElementAt(0).OperationList.ElementAt(0).Time;
+                        }
+                    }
+                    _iter++;
+                    <tr>
+                        <td style="width: 5%; background-color: lightblue;">
+                            @_iter
+                        </td>
+                        <td class="equipmentPush">
+                            <div style="display: inline-block">
+                                <a style="display: table;">@s.EquipmentName</a>
+                                <div style="display: inline-block;">
+                                    <table style="display: inline-block">
+                                        <tr>
+                                            <td>ВП</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Процесс</td>
+                                        </tr>
+                                    </table>
+                                    <table style="display: inline-block">
+                                        <tr>
+                                            <td>@s.EquipmentState</td>
+                                            <td>@s.VacuumPressure</td>
+                                            <td>@_dateStarTime</td>
+                                        </tr>
+                                        <tr>
+                                            <td>@_procStatus</td>
+                                            <td>@_procName</td>
+                                            <td>@_lastDateTimeProc</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+<div style="display: inline-block;">
+    <div class="TableLable2" style="border-radius: 10px; text-align: center; margin: 0.2%; background-color: grey; height: 50px;">
+        <p style="font: normal 28px 'Fugaz One', cursive;">Список процессов</p>
+    </div>
+    <div class="ViewTableProc" style="max-height: 70%; max-width: 100%; margin: 0.2%;">
+        <table class="processTable"  style="background-color: lightgray;">
+            <tr>
+                <th>
+                    <p>
+                    <p>
+                </th>
+                <th>
+                    <p>Имя
+                    <p>
+                </th>
+                <th>
+                    <p>Идентификатор
+                    <p>
+                </th>
+                <th>
+                    <p>Дата начала
+                    <p>
+                </th>
+                <th>
+                    <p>Рецепт
+                    <p>
+                </th>
+                <th>
+                    <p>Заказчик
+                    <p>
+                </th>
+                <th>
+                    <p>Оператор
+                    <p>
+                </th>
+                <th>
+                    <p>Партия
+                    <p>
+                </th>
+                <th>
+                    <p>Статус
+                    <p>
+                </th>
+            </tr>
+            @{
+                _iter = 0;
+                foreach (var s in Model)
+                {
+                    _iter++;
+
+                    if (s.Process != null)
+                    {
+                        foreach (var n in s.Process)
+                        {
+                            string status = "";
+                            if (@n.IsCompleted)
+                            {
+                                status = "Заверешена";
+                            }
+                            if (@n.IsFailed)
+                            {
+                                status = "Прервана";
+                            }
+                            if (!@n.IsFailed && !@n.IsCompleted)
+                            {
+                                status = "Выполняется";
+                            }
+                            <tr class="processPush">
+                                <td style="width: 5%; background-color: lightblue;">
+                                    @_iter
+                                </td>
+                                <td>@n.Name</td>
+                                <td>@n.Id</td>
+                                <td>@n.Date</td>
+                                <td>@n.RecipeName</td>
+                                <td>@n.CustomerName</td>
+                                <td>@n.OperatorName</td>
+                                <td>@n.PartName</td>
+                                <td>@status</td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </table>
+    </div>
+</div>
+<div style="display: inline-block;">
+    <div class="TableLable3" style="border-radius: 10px; text-align: center; margin: 0.2%; background-color: grey; height: 50px;">
+        <p style="font: normal 28px 'Fugaz One', cursive;">Список Операций</p>
+    </div>
+    <div class="ViewTableOperation" style="max-height: 70%; max-width: 100%; margin: 0.2%;">
+        <table class="operationTable" style="background-color: lightgray;">
+            <tr>
+                <th>
+                    <p>
+                    <p>
+                </th>
+                <th>
+                    <p>Идентификатор процесса
+                    <p>
+                </th>
+                <th>
+                    <p>Идентификатор
+                    <p>
+                </th>
+
+                <th>
+                    <p>Дата начала
+                    <p>
+                </th>
+                <th>
+                    <p>Имя рецепта
+                    <p>
+                </th>
+                <th>
+                    <p>Выполнение
+                    <p>
+                </th>
+                <th>
+                    <p>Параметр
+                    <p>
+                </th>
+            </tr>
+            @{
+                _iter = 0;
+                foreach (var s in Model)
+                {
+                    _iter++;
+
+                    if (s.Process != null)
+                    {
+                        foreach (var n in s.Process)
+                        {
+                            foreach (var v in n.OperationList)
+                            {
+                                <tr class="operationPush">
+
+
+                                    <td style="width: 5%; background-color: lightblue;">
+                                        @_iter
+                                    </td>
+                                    <td>@v.ProcessID</td>
+                                    <td>@v.Id</td>
+                                    <td>@v.Date</td>
+                                    <td>@v.RecipeName</td>
+                                    <td>@v.Time</td>
+                                    <td>@v.Parameter</td>
+
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            }
+        </table>
+    </div>
+</div>
+</body>
+</html>
+     
+     
